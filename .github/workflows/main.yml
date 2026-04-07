@@ -1,0 +1,65 @@
+name: Build Windows x64 Only
+ 
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        type: string
+        description: 'Build tag (e.g. v0.2.1-beta-http11)'
+        required: true
+        default: 'actions-test'
+      ref:
+        type: string
+        description: 'Git ref from which to build'
+        required: true
+        default: 'main'
+ 
+jobs:
+  set-date:
+    runs-on: ubuntu-latest
+    outputs:
+      date: ${{ steps.get_date.outputs.date }}
+      tag: ${{ steps.format_tag.outputs.tag }}
+    steps:
+      - name: Get Date
+        id: get_date
+        run: |
+          DATE=$(date -u +'%Y%m%d')
+          echo "date=${DATE}" >> "$GITHUB_OUTPUT"
+ 
+      - name: Determine Tag
+        id: format_tag
+        run: |
+          TAG="${{ github.event.inputs.tag }}"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+ 
+  build-win-x64:
+    runs-on: windows-latest
+    needs: set-date
+ 
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          ref: ${{ github.event.inputs.ref }}
+ 
+      - name: Install zip
+        run: choco install zip --no-progress --yes
+ 
+      - name: Set up dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "10.0.101"
+ 
+      - name: Build Windows x64
+        run: dotnet publish src/N_m3u8DL-RE -r win-x64 -c Release -o artifact-x64
+ 
+      - name: Package [win-x64]
+        run: |
+          cd artifact-x64
+          zip ../N_m3u8DL-RE_${{ needs.set-date.outputs.tag }}_win-x64_${{ needs.set-date.outputs.date }}.zip N_m3u8DL-RE.exe
+ 
+      - name: Upload Artifact [win-x64]
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-x64
+          path: N_m3u8DL-RE_${{ needs.set-date.outputs.tag }}_win-x64_${{ needs.set-date.outputs.date }}.zip
