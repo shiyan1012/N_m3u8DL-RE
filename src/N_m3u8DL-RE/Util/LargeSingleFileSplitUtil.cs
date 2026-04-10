@@ -138,20 +138,20 @@ internal static class LargeSingleFileSplitUtil
             {
                 Index = index,
                 From = counter,
-                To = counter + perSize
+                To = counter + perSize - 1  // 修改1：perSize - 1，确保每片正好10MB
             };
             // 没到最后
             if (fileSize - perSize > 0)
             {
                 fileSize -= perSize;
-                counter += perSize + 1;
+                counter += perSize;  // 修改2：去掉 +1，消除分片间隙
                 index++;
                 clips.Add(c);
             }
             // 已到最后
             else
             {
-                c.To = originalFileSize;
+                c.To = originalFileSize - 1;  // 修改3：文件大小-1，确保不超出最大字节索引
                 clips.Add(c);
                 break;
             }
