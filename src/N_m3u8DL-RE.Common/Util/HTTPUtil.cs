@@ -62,6 +62,7 @@ public static class HTTPUtil
                 if (redirectedUrl != url)
                 {
                     Logger.Extra($"Redirected => {redirectedUrl}");
+                    webResponse.Dispose();   // <--- 新增这一行
                     return await DoGetAsync(redirectedUrl, headers);
                 }
             }
