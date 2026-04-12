@@ -8,14 +8,17 @@ namespace N_m3u8DL_RE.Common.Util;
 
 public static class HTTPUtil
 {
-    public static readonly HttpClientHandler HttpClientHandler = new()
+    public static readonly SocketsHttpHandler HttpClientHandler = new()
     {
         AllowAutoRedirect = false,
         AutomaticDecompression = DecompressionMethods.All,
-        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true,
+        SslOptions = new System.Net.Security.SslClientAuthenticationOptions
+        {
+            RemoteCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+        },
         MaxConnectionsPerServer = 1024,
-        PooledConnectionLifetime = TimeSpan.FromMinutes(2),  // 连接最多存活2分钟
-        PooledConnectionIdleTimeout = TimeSpan.FromSeconds(3),  // 空闲3秒后关闭连接
+        PooledConnectionLifetime = TimeSpan.FromSeconds(120),
+        PooledConnectionIdleTimeout = TimeSpan.FromSeconds(5),
     };
 
     public static readonly HttpClient AppHttpClient = new(HttpClientHandler)
