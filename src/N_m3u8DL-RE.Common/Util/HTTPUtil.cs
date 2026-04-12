@@ -8,14 +8,23 @@ namespace N_m3u8DL_RE.Common.Util;
 
 public static class HTTPUtil
 {
-   public static readonly HttpClientHandler HttpClientHandler = new()
-    {
-        AllowAutoRedirect = false,
-        AutomaticDecompression = DecompressionMethods.All,
-        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true,
-        MaxConnectionsPerServer = 1024,
-    };
-
+   public static readonly SocketsHttpHandler HttpClientHandler = new()
+   {
+       AllowAutoRedirect = false,
+       AutomaticDecompression = DecompressionMethods.All,
+       
+       SslOptions = new System.Net.Security.SslClientAuthenticationOptions
+       {
+           RemoteCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+       },
+       
+       MaxConnectionsPerServer = 1024,   // 保持原值不变
+       
+       PooledConnectionLifetime = TimeSpan.FromSeconds(15),
+       
+       PooledConnectionIdleTimeout = TimeSpan.FromSeconds(10)
+   };
+   
     public static readonly HttpClient AppHttpClient = new(HttpClientHandler)
     {
         Timeout = TimeSpan.FromSeconds(100),
