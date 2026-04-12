@@ -15,7 +15,7 @@ public static class HTTPUtil
         ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true,
         MaxConnectionsPerServer = 1024,
         PooledConnectionLifetime = TimeSpan.FromMinutes(2),  // 连接最多存活2分钟
-        PooledConnectionIdleTimeout = TimeSpan.FromSeconds(5),  // 空闲3秒后关闭连接
+        PooledConnectionIdleTimeout = TimeSpan.FromSeconds(3),  // 空闲3秒后关闭连接
     };
 
     public static readonly HttpClient AppHttpClient = new(HttpClientHandler)
