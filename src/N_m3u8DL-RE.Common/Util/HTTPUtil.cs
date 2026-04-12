@@ -8,24 +8,19 @@ namespace N_m3u8DL_RE.Common.Util;
 
 public static class HTTPUtil
 {
-    public static readonly SocketsHttpHandler HttpClientHandler = new()
+   public static readonly HttpClientHandler HttpClientHandler = new()
     {
         AllowAutoRedirect = false,
         AutomaticDecompression = DecompressionMethods.All,
-        SslOptions = new System.Net.Security.SslClientAuthenticationOptions
-        {
-            RemoteCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-        },
+        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true,
         MaxConnectionsPerServer = 1024,
-        PooledConnectionLifetime = TimeSpan.FromSeconds(120),
-        PooledConnectionIdleTimeout = TimeSpan.FromSeconds(5),
     };
 
     public static readonly HttpClient AppHttpClient = new(HttpClientHandler)
     {
         Timeout = TimeSpan.FromSeconds(100),
-        DefaultRequestVersion = HttpVersion.Version20,
-        DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrHigher,
+        DefaultRequestVersion = HttpVersion.Version11,
+        DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact,
     };
 
     private static async Task<HttpResponseMessage> DoGetAsync(string url, Dictionary<string, string>? headers = null)
