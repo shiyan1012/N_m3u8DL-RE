@@ -22,7 +22,7 @@ public static class HTTPUtil
        
        PooledConnectionLifetime = TimeSpan.FromSeconds(30),
        
-       PooledConnectionIdleTimeout = FromMilliseconds(500),
+       PooledConnectionIdleTimeout = TimeSpan.FromSeconds(1),
    };
    
     public static readonly HttpClient AppHttpClient = new(HttpClientHandler)
