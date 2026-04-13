@@ -18,11 +18,11 @@ public static class HTTPUtil
            RemoteCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
        },
        
-       MaxConnectionsPerServer = 128,   // 保持原值1024不变
+       MaxConnectionsPerServer = 64,   // 保持原值1024不变
        
-       PooledConnectionLifetime = TimeSpan.FromSeconds(30),
+       PooledConnectionLifetime = TimeSpan.FromSeconds(0),
        
-       PooledConnectionIdleTimeout = TimeSpan.FromSeconds(1),
+       PooledConnectionIdleTimeout = TimeSpan.FromSeconds(0),
    };
    
     public static readonly HttpClient AppHttpClient = new(HttpClientHandler)
